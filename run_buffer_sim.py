@@ -44,18 +44,24 @@ class OrderQueue:
 
     def __init__(self) -> None:
         self._items = []
-        # TODO: self._lock = threading.Lock()
+        # TODO:
+        self._lock = threading.Lock()
 
     def enqueue(self, item) -> None:
         # TODO: wrap this in `with self._lock:`
-        self._items.append(item)
+        with self._lock:
+            self._items.append(item)
+        
 
     def dequeue(self):
         # TODO: wrap this whole method body in `with self._lock:`
-        if len(self._items) == 0:
-            raise QueueEmptyError("queue is empty")
-        time.sleep(0)  # deliberate -- see class docstring. Do not remove.
-        return self._items.pop(0)
+        with self._lock:
+            if len(self._items) == 0:
+                raise QueueEmptyError("queue is empty")
+        
+            time.sleep(0)  # deliberate -- see class docstring. Do not remove.
+            
+            return self._items.pop(0)
 
     def __len__(self) -> int:
         return len(self._items)
